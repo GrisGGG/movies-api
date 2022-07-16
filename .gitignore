@@ -104,4 +104,4 @@ dist
 .tern-port
 
 #Ocultos.js (API KEY)
-/scr/ocultos.js
+/src/ocultos.js
