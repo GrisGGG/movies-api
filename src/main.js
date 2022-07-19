@@ -32,6 +32,7 @@ async function getInfoApi(path, parentContainer, config){
 }
 
 function createCategories(categories, parentContainer){
+    parentContainer.innerHTML = "";
     categories.forEach(category => {
         const categoryContainer = document.createElement('div');
         categoryContainer.classList.add('category-container')
@@ -47,6 +48,7 @@ function createCategories(categories, parentContainer){
         categoryTitle.appendChild(categoryTitleText);
         categoryContainer.appendChild(categoryTitle);
         parentContainer.appendChild(categoryContainer)
+
 })}
 
 //Llamados a la API

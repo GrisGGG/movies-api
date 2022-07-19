@@ -11,7 +11,7 @@ arrowBtn.addEventListener('click', ()=>{
 });
 window.addEventListener('DOMContentLoaded', navigator, false);
 window.addEventListener('hashchange', navigator, false);
-window.scrollTo(0, 0);
+
 
 function navigator(){
     console.log({location});
@@ -31,15 +31,18 @@ function navigator(){
 
     }
     location.hash
+    window.scrollTo(0, 0);
 }
 
 function homePage(){
     headerSection.classList.remove('header-container');
     headerSection.style.background = ''
+    arrowBtn.classList.add('inactive');
+    arrowBtn.classList.remove('header-arrow--white');
     headerTitle.classList.remove('inactive');
     headerCategoryTitle.classList.add('inactive');
     searchForm.classList.remove('inactive');
-    arrowBtn.classList.add('inactive');
+   
     trendingPreviewSection.classList.remove('inactive');
     categoriesPreviewSection.classList.remove('inactive');
     genericSection.classList.add('inactive');
@@ -111,6 +114,7 @@ function categoryPage(){
     headerSection.classList.remove('header-container--long');
     headerSection.getElementsByClassName.background = '';
     arrowBtn.classList.remove('inactive');
+    arrowBtn.classList.remove('header-aarrow--white');
     headerTitle.classList.add('inactive');
     headerCategoryTitle.classList.remove('inactive');
     searchForm.classList.add('inactive');
