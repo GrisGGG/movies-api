@@ -53,7 +53,7 @@ async function getCategoriesPreview(){
 }
 
 
-async function getTrendingMovies(){
+async function getTrendingMoviesPreview(){
     getInfoApi('trending/movie/day', trendingMoviesPreviewList)
 }
 
@@ -64,7 +64,10 @@ async function getMoviesByCategory(id){
 }
 async function getMoviesBySearch(query){
     getInfoApi('search/movie',  genericSection, {params:{ query}})
+}
 
+async function getTrendingMovies(){
+    getInfoApi('trending/movie/day', genericSection)
 }
 
 
