@@ -80,8 +80,10 @@ async function getMovieById(id){
     movieDetailDescription.textContent = movie.overview;
     movieDetailScore.textContent = movie.vote_average;
 
-
-
-    createCategories(movie.genres, movieDetailCategoriesList)
+    createCategories(movie.genres, movieDetailCategoriesList);
+    getRelatedMoviesById(id)
 }
 
+async function getRelatedMoviesById(id){
+    getInfoApi(`movie/${id}/similar`, relatedMoviesContainer)
+}
