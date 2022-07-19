@@ -16,6 +16,9 @@ async function getInfoApi(path, parentContainer, config){
     movies.forEach(movie => {
         const movieContainer = document.createElement('div');
         movieContainer.classList.add('movie-container')  
+        movieContainer.addEventListener('click', () =>{
+            location.hash = '#movie=' + movie.id +'-'+ movie.title
+        })
         const movieImg = document.createElement('img');
         movieImg.classList.add('movie-img');
         movieImg.setAttribute('alt', movie.title);
@@ -28,12 +31,7 @@ async function getInfoApi(path, parentContainer, config){
     });
 }
 
-//Llamados a la API
-async function getCategoriesPreview(){
-    const {data} = await api('genre/movie/list');
-    const categories = data.genres;
-    console.log({data, categories})
-    
+function createCategories(categories, parentContainer){
     categories.forEach(category => {
         const categoryContainer = document.createElement('div');
         categoryContainer.classList.add('category-container')
@@ -48,26 +46,42 @@ async function getCategoriesPreview(){
         
         categoryTitle.appendChild(categoryTitleText);
         categoryContainer.appendChild(categoryTitle);
-        categoriesPreviewList.appendChild(categoryContainer)
-    });
+        parentContainer.appendChild(categoryContainer)
+})}
+
+//Llamados a la API
+async function getCategoriesPreview(){
+    const {data} = await api('genre/movie/list');
+    const categories = data.genres;
+    createCategories(categories, categoriesPreviewList)
 }
-
-
-async function getTrendingMoviesPreview(){
+ function getTrendingMoviesPreview(){
     getInfoApi('trending/movie/day', trendingMoviesPreviewList)
 }
-
-
-async function getMoviesByCategory(id){
+function getMoviesByCategory(id){
     getInfoApi('discover/movie',  genericSection, {params:{ with_genres: id,}})
-
 }
-async function getMoviesBySearch(query){
+function getMoviesBySearch(query){
     getInfoApi('search/movie',  genericSection, {params:{ query}})
 }
-
-async function getTrendingMovies(){
+function getTrendingMovies(){
     getInfoApi('trending/movie/day', genericSection)
 }
+async function getMovieById(id){
+    const { data: movie } = await api('movie/' + id);
 
+    const movieUrl = 'https://image.tmdb.org/t/p/w300/' + movie.poster_path;
+    console.log(movieUrl);
+    headerSection.style.background = `
+    linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), 
+    url(${movieUrl})`
+
+    movieDetailTitle.textContent = movie.title;
+    movieDetailDescription.textContent = movie.overview;
+    movieDetailScore.textContent = movie.vote_average;
+
+
+
+    createCategories(movie.genres, movieDetailCategoriesList)
+}
 

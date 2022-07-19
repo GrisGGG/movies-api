@@ -24,15 +24,18 @@ function navigator(){
     }else if (location.hash.startsWith('#category')){
         categoryPage()
     }else {
+     //   headerMovie.style.background = "";
         location.hash.startsWith('#home')
         homePage()
+        
+
     }
     location.hash
 }
 
 function homePage(){
     headerSection.classList.remove('header-container');
-    headerSection.getElementsByClassName.background = '';
+    headerSection.style.background = ''
     headerTitle.classList.remove('inactive');
     headerCategoryTitle.classList.add('inactive');
     searchForm.classList.remove('inactive');
@@ -85,17 +88,22 @@ function searchPage(){
 function moviePage(){
     console.log("movie!");
     headerSection.classList.add('header-container--long');
-   // headerSection.getElementsByClassName.background = '';
+   //headerSection.getElementsByClassName.background = ''
     arrowBtn.classList.remove('inactive');
     arrowBtn.classList.add('header-arrow--white');
     headerTitle.classList.remove('inactive');
     headerCategoryTitle.classList.add('inactive');
     searchForm.classList.add('inactive');
-
     trendingPreviewSection.classList.add('inactive');
     categoriesPreviewSection.classList.add('inactive');
     genericSection.classList.add('inactive');
     movieDetailSection.classList.remove('inactive');
+
+    //path
+    const [_, id] = location.hash.split('=')
+    const [movieId, name] = id.split('-')
+    //functions
+    getMovieById(movieId)
 }
 function categoryPage(){
     console.log("categories");
