@@ -1,5 +1,6 @@
 searchFormBtn.addEventListener('click', () => {
-    location.hash = '#search=s'
+    location.hash = '#search='+ searchFormInput.value
+    
 });
 trendingBtn.addEventListener('click', () => {
     location.hash = '#trends'
@@ -8,9 +9,9 @@ trendingBtn.addEventListener('click', () => {
 arrowBtn.addEventListener('click', ()=>{
     location.hash = '#home'
 });
-
 window.addEventListener('DOMContentLoaded', navigator, false);
 window.addEventListener('hashchange', navigator, false);
+window.scrollTo(0, 0);
 
 function navigator(){
     console.log({location});
@@ -70,13 +71,16 @@ function searchPage(){
     arrowBtn.classList.remove('inactive');
     arrowBtn.classList.remove('header-arrow--white');
     headerTitle.classList.add('inactive');
-    headerCategoryTitle.classList.remove('inactive');
+    headerCategoryTitle.classList.add('inactive');
     searchForm.classList.remove('inactive');
 
     trendingPreviewSection.classList.add('inactive');
     categoriesPreviewSection.classList.add('inactive');
     genericSection.classList.remove('inactive');
     movieDetailSection.classList.add('inactive');
+
+    const [_, query] = location.hash.split('=');
+    getMoviesBySearch(query);
 }
 function moviePage(){
     console.log("movie!");
@@ -107,4 +111,10 @@ function categoryPage(){
     categoriesPreviewSection.classList.add('inactive');
     genericSection.classList.remove('inactive');
     movieDetailSection.classList.add('inactive');
+
+    const [_, categoryData] = location.hash.split('=')
+    const [categoryId, categoryName] = categoryData.split('-')
+    headerCategoryTitle.innerHTML = categoryName;
+    getMoviesByCategory(categoryId)
 }
+
