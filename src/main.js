@@ -8,6 +8,14 @@ const api = axios.create({
     }
 })
 //helpers
+const lazyLoading = new IntersectionObserver((entries) =>{
+    entries.forEach((entry) =>{
+        if(entry.isIntersecting){ //Si el usuario lo puede ver
+            const url = entry.target.getAttribute('data-img')
+            entry.target.setAttribute('src', url)
+        }
+    })
+})
 async function getInfoApi(path, parentContainer, config){
     const { data } = await api(path, config)
     const movies = data.results;
@@ -23,13 +31,19 @@ async function getInfoApi(path, parentContainer, config){
         movieImg.classList.add('movie-img');
         movieImg.setAttribute('alt', movie.title);
         movieImg.setAttribute(
-            'src',
+            'data-img',
             'https://image.tmdb.org/t/p/w300/' + movie.poster_path
-        )
+        );
+      
+            lazyLoading.observe(movieImg)
+       
+
         movieContainer.appendChild(movieImg);
         parentContainer.appendChild(movieContainer)
     });
 }
+
+
 
 function createCategories(categories, parentContainer){
     parentContainer.innerHTML = "";
@@ -89,3 +103,4 @@ async function getMovieById(id){
 async function getRelatedMoviesById(id){
     getInfoApi(`movie/${id}/similar`, relatedMoviesContainer)
 }
+
