@@ -35,8 +35,10 @@ async function getInfoApi(path, parentContainer, config, lazyLoad){
             'https://image.tmdb.org/t/p/w300/' + movie.poster_path
         );
         movieImg.addEventListener('error', () => {
-           
-          })
+           movieImg.setAttribute(
+            'src', '../assets/images/broken.jpg'
+           );
+          });
             if(!lazyLoad){
                 lazyLoading.observe(movieImg)
             }
