@@ -16,7 +16,7 @@ const lazyLoading = new IntersectionObserver((entries) =>{
         }
     })
 })
-async function getInfoApi(path, parentContainer, config){
+async function getInfoApi(path, parentContainer, config, lazyLoad){
     const { data } = await api(path, config)
     const movies = data.results;
 
@@ -29,13 +29,18 @@ async function getInfoApi(path, parentContainer, config){
         })
         const movieImg = document.createElement('img');
         movieImg.classList.add('movie-img');
-        movieImg.setAttribute('alt', movie.title);
+        movieImg.setAttribute('alt', movie.title);    
         movieImg.setAttribute(
-            'data-img',
+           !lazyLoad ? 'data-img': 'src',
             'https://image.tmdb.org/t/p/w300/' + movie.poster_path
         );
-      
-            lazyLoading.observe(movieImg)
+        movieImg.addEventListener('error', () => {
+           
+          })
+            if(!lazyLoad){
+                lazyLoading.observe(movieImg)
+            }
+           
        
 
         movieContainer.appendChild(movieImg);
@@ -71,11 +76,11 @@ async function getCategoriesPreview(){
     const categories = data.genres;
     createCategories(categories, categoriesPreviewList)
 }
- function getTrendingMoviesPreview(){
-    getInfoApi('trending/movie/day', trendingMoviesPreviewList)
+function getTrendingMoviesPreview(){
+   getInfoApi('trending/movie/day', trendingMoviesPreviewList, false)
 }
 function getMoviesByCategory(id){
-    getInfoApi('discover/movie',  genericSection, {params:{ with_genres: id,}})
+    getInfoApi('discover/movie',  genericSection, {params:{ with_genres: id,}}, true)
 }
 function getMoviesBySearch(query){
     getInfoApi('search/movie',  genericSection, {params:{ query}})
