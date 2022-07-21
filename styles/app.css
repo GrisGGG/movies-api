@@ -86,7 +86,10 @@ button {
   font-size: 14px;
   cursor: pointer;
 }
-
+.trendLoad-button{
+  position: absolute;
+ bottom: 5%
+}
 
 /* Shared */
 .header-container, .trendingPreview-header, .categoriesPreview-container {

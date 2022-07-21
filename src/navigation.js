@@ -68,6 +68,7 @@ function trendsPage(){
 
     getTrendingMovies()
     headerCategoryTitle.innerHTML = 'Tendencias';
+   
 }
 function searchPage(){
     console.log('search!!');

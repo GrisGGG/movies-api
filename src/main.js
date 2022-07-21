@@ -7,6 +7,7 @@ const api = axios.create({
         'api_key': API_KEY,
     }
 })
+
 //helpers
 const lazyLoading = new IntersectionObserver((entries) =>{
     entries.forEach((entry) =>{
@@ -14,13 +15,16 @@ const lazyLoading = new IntersectionObserver((entries) =>{
             const url = entry.target.getAttribute('data-img')
             entry.target.setAttribute('src', url)
         }
-    })
-})
-async function getInfoApi(path, parentContainer, config, lazyLoad){
-    const { data } = await api(path, config)
-    const movies = data.results;
+    });
+});
 
-    parentContainer.innerHTML = "";
+
+
+function createMovie(movies, parentContainer, {lazyLoad = false, clean = true} = {}){
+    if (clean){
+        parentContainer.innerHTML = "";
+    }
+ 
     movies.forEach(movie => {
         const movieContainer = document.createElement('div');
         movieContainer.classList.add('movie-container')  
@@ -31,26 +35,20 @@ async function getInfoApi(path, parentContainer, config, lazyLoad){
         movieImg.classList.add('movie-img');
         movieImg.setAttribute('alt', movie.title);    
         movieImg.setAttribute(
-           !lazyLoad ? 'data-img': 'src',
+        lazyLoad ? 'data-img': 'src',
             'https://image.tmdb.org/t/p/w300/' + movie.poster_path
         );
         movieImg.addEventListener('error', () => {
-           movieImg.setAttribute(
-            'src', '../assets/images/broken.jpg'
-           );
-          });
-            if(!lazyLoad){
+            movieImg.setAttribute(
+            'src', '../assets/images/broken.jpg');
+        });
+            if(lazyLoad){
                 lazyLoading.observe(movieImg)
             }
-           
-       
-
         movieContainer.appendChild(movieImg);
         parentContainer.appendChild(movieContainer)
     });
 }
-
-
 
 function createCategories(categories, parentContainer){
     parentContainer.innerHTML = "";
@@ -59,11 +57,11 @@ function createCategories(categories, parentContainer){
         categoryContainer.classList.add('category-container')
         
         const categoryTitle = document.createElement('h3');
+        categoryTitle.classList.add('category-title');
         categoryTitle.setAttribute('id', 'id' + category.id)
         categoryTitle.addEventListener('click', () => {
             location.hash = `#category=${category.id}-${category.name}`
         })
-        categoryTitle.classList.add('category-title')
         const categoryTitleText = document.createTextNode(category.name);
         
         categoryTitle.appendChild(categoryTitleText);
@@ -73,27 +71,77 @@ function createCategories(categories, parentContainer){
 })}
 
 //Llamados a la API
+async function getTrendingMoviesPreview(){
+    const { data } = await api('trending/movie/day');
+    const movies = data.results;
+
+    createMovie(movies, trendingMoviesPreviewList, true);
+}
 async function getCategoriesPreview(){
     const {data} = await api('genre/movie/list');
     const categories = data.genres;
+    
     createCategories(categories, categoriesPreviewList)
 }
-function getTrendingMoviesPreview(){
-   getInfoApi('trending/movie/day', trendingMoviesPreviewList, false)
+
+async function getMoviesByCategory(id){
+    const { data } = await api('discover/movie', {
+        params: {
+          with_genres: id,
+        },
+      });
+      const movies = data.results;
+    
+      createMovie(movies, genericSection, true);
 }
-function getMoviesByCategory(id){
-    getInfoApi('discover/movie',  genericSection, {params:{ with_genres: id,}}, true)
+async function getMoviesBySearch(query){
+    const { data } = await api('search/movie', {
+        params: {
+        query,
+        },
+    });
+    const movies = data.results;
+    
+    createMovie(movies, genericSection);
 }
-function getMoviesBySearch(query){
-    getInfoApi('search/movie',  genericSection, {params:{ query}})
+async function getTrendingMovies(){
+    const { data } = await api('trending/movie/day');
+    const movies = data.results;
+
+    createMovie(movies, genericSection, { lazyLoad: true, clean: true });
+
+    const btnLoadMore = document.createElement('button');
+    btnLoadMore.innerText = 'Cargar más';
+    btnLoadMore.addEventListener('click', getPaginatedTrendingMovies);
+    genericSection.appendChild(btnLoadMore);
 }
-function getTrendingMovies(){
-    getInfoApi('trending/movie/day', genericSection)
+let page = 1;
+
+async function getPaginatedTrendingMovies() {
+  page++;
+  const { data } = await api('trending/movie/day', {
+    params: {
+      page,
+    },
+  });
+  const movies = data.results;
+
+  createMovie(
+    movies,
+    genericSection,
+    { lazyLoad: true, clean: false },
+  );
+
+  const btnLoadMore = document.createElement('button');
+  btnLoadMore.innerText = 'Cargar más';
+  btnLoadMore.addEventListener('click', getPaginatedTrendingMovies);
+  genericSection.appendChild(btnLoadMore);
 }
+
 async function getMovieById(id){
     const { data: movie } = await api('movie/' + id);
 
-    const movieUrl = 'https://image.tmdb.org/t/p/w300/' + movie.poster_path;
+    const movieUrl = 'https://image.tmdb.org/t/p/w500/' + movie.poster_path;
     console.log(movieUrl);
     headerSection.style.background = `
     linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), 
@@ -108,6 +156,10 @@ async function getMovieById(id){
 }
 
 async function getRelatedMoviesById(id){
-    getInfoApi(`movie/${id}/similar`, relatedMoviesContainer)
+    const { data } = await api(`movie/${id}/similar`);
+    const relatedMovies = data.results;
+ 
+    createMovie(relatedMovies, relatedMoviesContainer);
+
 }
 
