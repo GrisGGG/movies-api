@@ -130,6 +130,17 @@ button {
   border-radius: 8px;
   min-height: 175px;
 }
+.movie-btn {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  height: 30px;
+  width: 30px;
+  border-radius: 30px;
+  padding: 0;
+  margin: 0;
+}
+
 
 .categoriesPreview-list, .categories-list {
   display: flex;
@@ -238,6 +249,7 @@ button {
 .liked-movieList .movie-container {
   display: inline-block;
   margin-right: 8px;
+  position: relative;
 }
 
 .trendingPreview-movieList .movie-container .movie-img,
@@ -390,7 +402,7 @@ button {
   min-height: 187.5px;
   max-height: 187.5px;
 }
-  
+
 
 /* Footer */
 footer {

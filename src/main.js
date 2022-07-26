@@ -40,10 +40,18 @@ function createMovie(movies, parentContainer, {lazyLoad = true, clean = true} = 
             movieImg.setAttribute(
             'src', '../assets/images/broken.jpg');
         });
+        const movieBtn = document.createElement('button');
+        movieBtn.classList.add('movie-btn');
+        movieBtn.addEventListener('click', () => {
+          movieBtn.classList.toggle('movie-btn--liked');
+          // DEBERIAMOS AGREGAR LA PELICULA A LS
+        });
             if(lazyLoad){
                 lazyLoading.observe(movieImg)
             }
+           
         movieContainer.appendChild(movieImg);
+        movieContainer.appendChild(movieBtn);
         parentContainer.appendChild(movieContainer)
     });
 }
