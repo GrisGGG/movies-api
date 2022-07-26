@@ -140,7 +140,15 @@ button {
   padding: 0;
   margin: 0;
 }
-
+.movie-btn::before{
+  content: '🤍';
+}
+.movie-btn--liked{
+  background-color: var(--purple-light-2);
+}
+.movie-btn--liked::before{
+  content: '💜';
+}
 
 .categoriesPreview-list, .categories-list {
   display: flex;
@@ -311,6 +319,7 @@ button {
 /* Generic List (search, trending & category) */
 .genericList-container {
   display: flex;
+
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -318,6 +327,7 @@ button {
 }
 
 .genericList-container .movie-container {
+  position: relative;
   display: inline-block;
   width: 47.5%;
 }
