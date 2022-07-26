@@ -1,3 +1,6 @@
+let page = 1;
+let infiniteScroll;
+
 searchFormBtn.addEventListener('click', () => {
     location.hash = '#search='+ searchFormInput.value
     
@@ -11,10 +14,14 @@ arrowBtn.addEventListener('click', ()=>{
 });
 window.addEventListener('DOMContentLoaded', navigator, false);
 window.addEventListener('hashchange', navigator, false);
-
+//window.addEventListener('scroll', getPaginatedTrendingMovies)
+window.addEventListener('scroll', infiniteScroll, true);
 
 function navigator(){
-    console.log({location});
+    if(infiniteScroll){
+        window.removeEventListener('scroll', infiniteScroll)
+        infiniteScroll = undefined;
+    }
     if(location.hash.startsWith('#trends')){
         trendsPage()
     }else if (location.hash.startsWith('#search=')){
@@ -25,13 +32,18 @@ function navigator(){
         categoryPage()
     }else {
      //   headerMovie.style.background = "";
-        location.hash.startsWith('#home')
+       // location.hash.startsWith('#home')
         homePage()
-        
-
     }
-    location.hash
-    window.scrollTo(0, 0);
+   // location.hash
+   // window.scrollTo(0, 0);
+   document.body.scrollTop = 0
+   document.documentElement.scrollTop = 0
+
+    if(infiniteScroll){
+        window.addEventListener('scroll', infiniteScroll, { passive: false});
+    }
+    page = 1
 }
 
 function homePage(){
@@ -68,6 +80,7 @@ function trendsPage(){
 
     getTrendingMovies()
     headerCategoryTitle.innerHTML = 'Tendencias';
+    infiniteScroll = getPaginatedTrendingMovies;
    
 }
 function searchPage(){
@@ -88,6 +101,8 @@ function searchPage(){
 
     const [_, query] = location.hash.split('=');
     getMoviesBySearch(query);
+
+    infiniteScroll =  getPaginatedMoviesBySearch(query)
 }
 function moviePage(){
     console.log("movie!");
@@ -129,5 +144,7 @@ function categoryPage(){
     const [categoryId, categoryName] = categoryData.split('-')
     headerCategoryTitle.innerHTML = categoryName;
     getMoviesByCategory(categoryId)
+
+    infiniteScroll = getMoviesByCategoryAll(categoryId)
 }
 
